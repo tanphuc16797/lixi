@@ -94,13 +94,16 @@
         input,
         select {
             width: 100%;
-            padding: 12px 12px;
+            padding: 14px 12px;
             border-radius: 12px;
             border: 1px solid var(--border);
             background: var(--card2);
             color: var(--text);
             outline: none;
-            font-size: 14px;
+            font-size: 16px !important;
+            /* Prevent iOS zoom */
+            min-height: 48px;
+            /* Larger touch target */
         }
 
         input::placeholder {
@@ -112,40 +115,19 @@
             border: 1px solid var(--border);
             background: rgba(255, 255, 255, 0.06);
             color: var(--text);
-            padding: 12px 14px;
+            padding: 14px 16px;
             border-radius: 12px;
-            font-size: 14px;
+            font-size: 16px !important;
             cursor: pointer;
-        }
-
-        button.primary {
-            background: linear-gradient(135deg, rgba(255, 204, 0, 0.95), rgba(255, 102, 0, 0.9));
-            border: none;
-            color: #171400;
-            font-weight: 700;
-        }
-
-        button.danger {
-            background: rgba(255, 77, 79, 0.12);
-            border-color: rgba(255, 77, 79, 0.35);
-            color: #ffd7d7;
-        }
-
-        button.ok {
-            background: rgba(82, 196, 26, 0.12);
-            border-color: rgba(82, 196, 26, 0.35);
-            color: #d8ffd0;
-        }
-
-        button:disabled {
-            opacity: 0.55;
-            cursor: not-allowed;
+            min-height: 48px;
+            /* Larger touch target */
+            font-weight: 500;
         }
 
         .split {
             display: grid;
             grid-template-columns: 1fr;
-            gap: 12px;
+            gap: 16px;
         }
 
         @media (min-width: 860px) {
@@ -480,13 +462,13 @@
                 box.style.display = 'flex';
                 box.style.justifyContent = 'space-between';
                 box.style.alignItems = 'center';
-                box.style.padding = '8px 0';
+                box.style.padding = '12px 0'; // Increased padding for touch
                 box.style.borderBottom = '1px solid rgba(255,255,255,0.05)';
 
                 box.innerHTML = `
-        <label style="margin:0; font-size:15px;">${formatVND(d)}</label>
-        <div style="width:120px;">
-             <input type="number" min="0" step="1" data-denom="${d}" placeholder="0" value="${current}" style="text-align:right; font-weight:bold; font-size:16px;" />
+        <label style="margin:0; font-size:16px;">${formatVND(d)}</label>
+        <div style="width:140px;">
+             <input type="number" inputmode="numeric" min="0" step="1" data-denom="${d}" placeholder="0" value="${current}" style="text-align:right; font-weight:bold; font-size:18px;" />
         </div>
       `;
                 wrap.appendChild(box);
