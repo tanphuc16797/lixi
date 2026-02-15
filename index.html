@@ -1,0 +1,633 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Rút Lì Xì</title>
+  <style>
+    :root {
+      --bg: #0b1020;
+      --card: rgba(255,255,255,0.08);
+      --card2: rgba(255,255,255,0.06);
+      --text: #e9ecff;
+      --muted: rgba(233,236,255,0.75);
+      --accent: #ffcc00;
+      --danger: #ff4d4f;
+      --ok: #52c41a;
+      --border: rgba(255,255,255,0.12);
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji","Segoe UI Emoji";
+      background: radial-gradient(1200px 800px at 70% -10%, rgba(255,204,0,0.25), transparent 60%),
+                  radial-gradient(1000px 700px at -10% 10%, rgba(82,196,26,0.18), transparent 55%),
+                  var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      padding: 18px;
+    }
+    header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 14px;
+    }
+    h1 {
+      font-size: 20px;
+      margin: 0;
+      letter-spacing: 0.2px;
+    }
+    .pill {
+      font-size: 12px;
+      padding: 6px 10px;
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      color: var(--muted);
+      background: rgba(255,255,255,0.04);
+      white-space: nowrap;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 12px;
+      max-width: 860px;
+      margin: 0 auto;
+    }
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 14px;
+      backdrop-filter: blur(10px);
+    }
+    .row {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+    .row > * { flex: 1; }
+    label {
+      display: block;
+      font-size: 12px;
+      color: var(--muted);
+      margin-bottom: 6px;
+    }
+    input, select {
+      width: 100%;
+      padding: 12px 12px;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      background: var(--card2);
+      color: var(--text);
+      outline: none;
+      font-size: 14px;
+    }
+    input::placeholder { color: rgba(233,236,255,0.45); }
+    button {
+      appearance: none;
+      border: 1px solid var(--border);
+      background: rgba(255,255,255,0.06);
+      color: var(--text);
+      padding: 12px 14px;
+      border-radius: 12px;
+      font-size: 14px;
+      cursor: pointer;
+    }
+    button.primary {
+      background: linear-gradient(135deg, rgba(255,204,0,0.95), rgba(255,102,0,0.9));
+      border: none;
+      color: #171400;
+      font-weight: 700;
+    }
+    button.danger {
+      background: rgba(255,77,79,0.12);
+      border-color: rgba(255,77,79,0.35);
+      color: #ffd7d7;
+    }
+    button.ok {
+      background: rgba(82,196,26,0.12);
+      border-color: rgba(82,196,26,0.35);
+      color: #d8ffd0;
+    }
+    button:disabled {
+      opacity: 0.55;
+      cursor: not-allowed;
+    }
+    .split {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 12px;
+    }
+    @media (min-width: 860px) {
+      .split { grid-template-columns: 1.1fr 0.9fr; }
+    }
+    .muted { color: var(--muted); }
+    .kiosk {
+      display: grid;
+      place-items: center;
+      text-align: center;
+      padding: 18px;
+      min-height: 45vh;
+    }
+    .big {
+      font-size: 44px;
+      font-weight: 900;
+      letter-spacing: 0.5px;
+      margin: 10px 0 6px;
+    }
+    .big small {
+      display: block;
+      font-size: 14px;
+      font-weight: 600;
+      opacity: 0.8;
+      margin-top: 4px;
+    }
+    .cta {
+      width: 100%;
+      max-width: 520px;
+      padding: 18px 18px;
+      border-radius: 18px;
+      font-size: 20px;
+    }
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0,1fr));
+      gap: 10px;
+      margin-top: 12px;
+      width: 100%;
+      max-width: 520px;
+    }
+    .stat {
+      background: rgba(255,255,255,0.06);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 10px 12px;
+      text-align: left;
+    }
+    .stat .v { font-size: 16px; font-weight: 800; }
+    .stat .k { font-size: 12px; color: var(--muted); margin-top: 2px; }
+
+    .history {
+      max-height: 320px;
+      overflow: auto;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      background: rgba(0,0,0,0.15);
+    }
+    .history table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+    }
+    .history th, .history td {
+      padding: 10px 10px;
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+      text-align: left;
+      vertical-align: top;
+      white-space: nowrap;
+    }
+    .history th { position: sticky; top: 0; background: rgba(14,18,36,0.95); }
+    .badge {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 999px;
+      border: 1px solid rgba(255,255,255,0.18);
+      background: rgba(255,255,255,0.06);
+      font-size: 12px;
+    }
+    .note {
+      font-size: 12px;
+      color: var(--muted);
+      line-height: 1.45;
+    }
+    .right { text-align: right; }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Rút Lì Xì</h1>
+    <div class="pill" id="modePill">Chưa thiết lập quỹ</div>
+  </header>
+
+  <div class="grid">
+
+    <div class="card split" id="setupSection">
+      <div>
+        <h2 style="margin:0 0 8px; font-size:16px;">Thiết lập quỹ (chủ phòng)</h2>
+        <p class="note" style="margin:0 0 12px;">Nhập số lượng phong bao theo từng mệnh giá. Sau đó bấm <b>Khóa để rút</b> và đưa điện thoại cho người khác bấm.</p>
+
+        <div class="row">
+          <div>
+            <label>PIN chủ phòng (mặc định 6868)</label>
+            <input id="pinInput" type="password" inputmode="numeric" placeholder="Đổi PIN (tùy chọn)" />
+          </div>
+          <div>
+            <label>Danh sách mệnh giá</label>
+            <select id="presetSelect">
+              <option value="default">10k, 20k, 50k, 100k, 200k, 500k</option>
+              <option value="extended">5k, 10k, 20k, 50k, 100k, 200k, 500k</option>
+            </select>
+          </div>
+        </div>
+
+        <div style="height:10px"></div>
+
+        <div class="row" id="denomGrid" style="align-items: stretch;"></div>
+
+        <div style="height:10px"></div>
+
+        <div class="row">
+          <button class="ok" id="saveBtn">Lưu quỹ</button>
+          <button class="primary" id="lockBtn">Khóa để rút</button>
+          <button class="danger" id="resetAllBtn">Reset tất cả</button>
+        </div>
+
+        <div style="height:8px"></div>
+        <div class="note" id="setupHint"></div>
+      </div>
+
+      <div>
+        <h2 style="margin:0 0 8px; font-size:16px;">Thống kê quỹ</h2>
+        <div class="card" style="padding:12px; background: rgba(255,255,255,0.05);">
+          <div class="row" style="gap:8px;">
+            <div class="stat">
+              <div class="v" id="totalEnvelopes">0</div>
+              <div class="k">Tổng phong bao</div>
+            </div>
+            <div class="stat">
+              <div class="v" id="totalAmount">0 ₫</div>
+              <div class="k">Tổng tiền</div>
+            </div>
+          </div>
+          <div style="height:8px"></div>
+          <div class="row" style="gap:8px;">
+            <div class="stat">
+              <div class="v" id="remainingEnvelopes">0</div>
+              <div class="k">Còn lại</div>
+            </div>
+            <div class="stat">
+              <div class="v" id="remainingAmount">0 ₫</div>
+              <div class="k">Tiền còn lại</div>
+            </div>
+          </div>
+        </div>
+
+        <div style="height:12px"></div>
+
+        <h2 style="margin:0 0 8px; font-size:16px;">Lịch sử rút</h2>
+        <div class="history" id="historyWrap">
+          <table>
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Thời gian</th>
+                <th class="right">Mệnh giá</th>
+              </tr>
+            </thead>
+            <tbody id="historyBody"></tbody>
+          </table>
+        </div>
+
+        <div style="height:10px"></div>
+        <div class="row">
+          <button class="danger" id="clearHistoryBtn">Xóa lịch sử</button>
+          <button id="exportBtn">Xuất CSV</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="card" id="kioskSection" style="display:none;">
+      <div class="kiosk">
+        <div>
+          <div class="badge" id="kioskBadge">Chế độ rút</div>
+          <div class="big" id="result">—<small>Chạm nút để rút</small></div>
+          <button class="primary cta" id="drawBtn">RÚT</button>
+
+          <div class="stats">
+            <div class="stat">
+              <div class="v" id="kioskRemaining">0</div>
+              <div class="k">Phong bao còn lại</div>
+            </div>
+            <div class="stat">
+              <div class="v" id="kioskRemainingAmount">0 ₫</div>
+              <div class="k">Tiền còn lại</div>
+            </div>
+          </div>
+
+          <div style="height:12px"></div>
+          <button id="adminBtn">Vào chủ phòng</button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+<script>
+  const STORAGE_KEY = 'lixi_v1';
+  const DEFAULT_PIN = '6868';
+
+  const PRESETS = {
+    default: [10000, 20000, 50000, 100000, 200000, 500000],
+    extended: [5000, 10000, 20000, 50000, 100000, 200000, 500000]
+  };
+
+  function nowStr() {
+    const d = new Date();
+    const pad = (n) => String(n).padStart(2,'0');
+    return `${pad(d.getDate())}/${pad(d.getMonth()+1)} ${pad(d.getHours())}:${pad(d.getMinutes())}:${pad(d.getSeconds())}`;
+  }
+
+  function formatVND(n) {
+    try {
+      return new Intl.NumberFormat('vi-VN').format(n) + ' ₫';
+    } catch {
+      return n + ' ₫';
+    }
+  }
+
+  function loadState() {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (!raw) {
+      return {
+        pin: DEFAULT_PIN,
+        locked: false,
+        denoms: PRESETS.default,
+        pool: {},      // denom -> remaining count
+        initial: {},   // denom -> initial count
+        history: []
+      };
+    }
+    try {
+      const s = JSON.parse(raw);
+      // migration safety
+      if (!s.pin) s.pin = DEFAULT_PIN;
+      if (!Array.isArray(s.denoms) || s.denoms.length === 0) s.denoms = PRESETS.default;
+      if (!s.pool) s.pool = {};
+      if (!s.initial) s.initial = {};
+      if (!Array.isArray(s.history)) s.history = [];
+      if (typeof s.locked !== 'boolean') s.locked = false;
+      return s;
+    } catch {
+      localStorage.removeItem(STORAGE_KEY);
+      return loadState();
+    }
+  }
+
+  function saveState() {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+  }
+
+  function sumPool(map) {
+    return Object.values(map).reduce((a,b)=>a+(Number(b)||0),0);
+  }
+
+  function sumAmount(map) {
+    return Object.entries(map).reduce((acc,[k,v]) => acc + (Number(k) * (Number(v)||0)), 0);
+  }
+
+  function ensureDenomsInMaps() {
+    for (const d of state.denoms) {
+      if (state.pool[d] == null) state.pool[d] = 0;
+      if (state.initial[d] == null) state.initial[d] = state.pool[d] || 0;
+    }
+    // remove keys not in denom list
+    for (const k of Object.keys(state.pool)) {
+      if (!state.denoms.includes(Number(k))) delete state.pool[k];
+    }
+    for (const k of Object.keys(state.initial)) {
+      if (!state.denoms.includes(Number(k))) delete state.initial[k];
+    }
+  }
+
+  function renderDenomInputs() {
+    const wrap = document.getElementById('denomGrid');
+    wrap.innerHTML = '';
+
+    state.denoms.forEach((d) => {
+      const box = document.createElement('div');
+      box.style.flex = '1 1 220px';
+      box.innerHTML = `
+        <label>${formatVND(d)} — số lượng</label>
+        <input type="number" min="0" step="1" data-denom="${d}" value="${Number(state.pool[d]||0)}" />
+      `;
+      wrap.appendChild(box);
+    });
+
+    wrap.querySelectorAll('input[data-denom]').forEach((inp) => {
+      inp.addEventListener('input', () => {
+        const denom = Number(inp.dataset.denom);
+        const val = Math.max(0, Number(inp.value || 0));
+        state.pool[denom] = val;
+        // do NOT auto change initial until Save
+        updateStats();
+        saveState();
+      });
+    });
+  }
+
+  function renderHistory() {
+    const body = document.getElementById('historyBody');
+    body.innerHTML = '';
+
+    if (state.history.length === 0) {
+      const tr = document.createElement('tr');
+      tr.innerHTML = `<td colspan="3" class="muted" style="padding:12px;">Chưa có lượt rút.</td>`;
+      body.appendChild(tr);
+      return;
+    }
+
+    state.history.slice().reverse().forEach((h, idx) => {
+      const tr = document.createElement('tr');
+      tr.innerHTML = `
+        <td>${state.history.length - idx}</td>
+        <td class="muted">${h.time}</td>
+        <td class="right"><b>${formatVND(h.amount)}</b></td>
+      `;
+      body.appendChild(tr);
+    });
+  }
+
+  function updateStats() {
+    ensureDenomsInMaps();
+
+    const totalEnv = sumPool(state.initial);
+    const totalAmt = sumAmount(state.initial);
+    const remEnv = sumPool(state.pool);
+    const remAmt = sumAmount(state.pool);
+
+    document.getElementById('totalEnvelopes').textContent = totalEnv;
+    document.getElementById('totalAmount').textContent = formatVND(totalAmt);
+    document.getElementById('remainingEnvelopes').textContent = remEnv;
+    document.getElementById('remainingAmount').textContent = formatVND(remAmt);
+
+    document.getElementById('kioskRemaining').textContent = remEnv;
+    document.getElementById('kioskRemainingAmount').textContent = formatVND(remAmt);
+
+    const pill = document.getElementById('modePill');
+    if (state.locked) pill.textContent = `Đang khóa để rút — còn ${remEnv} bao`; else pill.textContent = totalEnv>0 ? 'Đang thiết lập quỹ' : 'Chưa thiết lập quỹ';
+
+    const drawBtn = document.getElementById('drawBtn');
+    drawBtn.disabled = !state.locked || remEnv <= 0;
+    if (!state.locked) {
+      document.getElementById('result').innerHTML = `—<small>Chủ phòng hãy “Khóa để rút”</small>`;
+    } else if (remEnv <= 0) {
+      document.getElementById('result').innerHTML = `HẾT QUỸ<small>Không còn phong bao</small>`;
+    }
+
+    const setupHint = document.getElementById('setupHint');
+    setupHint.textContent = state.locked
+      ? 'Đang khóa. Đưa điện thoại cho người khác rút. Muốn chỉnh quỹ, vào “Vào chủ phòng” (nhập PIN).'
+      : 'Mẹo: bấm “Lưu quỹ” trước, rồi “Khóa để rút”.';
+
+    // toggle sections
+    document.getElementById('setupSection').style.display = state.locked ? 'none' : 'grid';
+    document.getElementById('kioskSection').style.display = state.locked ? 'block' : 'none';
+
+    renderHistory();
+  }
+
+  function buildWeightedList() {
+    const list = [];
+    for (const d of state.denoms) {
+      const c = Number(state.pool[d] || 0);
+      for (let i=0; i<c; i++) list.push(d);
+    }
+    return list;
+  }
+
+  function drawOne() {
+    ensureDenomsInMaps();
+    const remEnv = sumPool(state.pool);
+    if (!state.locked || remEnv <= 0) return null;
+
+    // Weighted by remaining counts
+    const bag = buildWeightedList();
+    const pick = bag[Math.floor(Math.random() * bag.length)];
+
+    state.pool[pick] = Math.max(0, Number(state.pool[pick]||0) - 1);
+    state.history.push({ time: nowStr(), amount: pick });
+    saveState();
+
+    return pick;
+  }
+
+  function exportCSV() {
+    const rows = [['No','Time','Amount(VND)']];
+    state.history.forEach((h, i) => rows.push([String(i+1), h.time, String(h.amount)]));
+    const csv = rows.map(r => r.map(x => '"'+String(x).replaceAll('"','""')+'"').join(',')).join('\n');
+    const blob = new Blob([csv], {type:'text/csv;charset=utf-8'});
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'lixi-history.csv';
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    URL.revokeObjectURL(url);
+  }
+
+  // state init
+  let state = loadState();
+  ensureDenomsInMaps();
+
+  // UI handlers
+  document.getElementById('presetSelect').addEventListener('change', (e) => {
+    const key = e.target.value;
+    state.denoms = PRESETS[key] || PRESETS.default;
+    ensureDenomsInMaps();
+    renderDenomInputs();
+    updateStats();
+    saveState();
+  });
+
+  document.getElementById('pinInput').addEventListener('change', (e) => {
+    const v = String(e.target.value || '').trim();
+    if (v.length >= 4) {
+      state.pin = v;
+      saveState();
+      e.target.value = '';
+      alert('Đã đổi PIN.');
+    } else if (v.length > 0) {
+      alert('PIN nên >= 4 ký tự.');
+    }
+  });
+
+  document.getElementById('saveBtn').addEventListener('click', () => {
+    // snapshot as initial budget
+    for (const d of state.denoms) {
+      state.initial[d] = Number(state.pool[d] || 0);
+    }
+    saveState();
+    updateStats();
+    alert('Đã lưu quỹ.');
+  });
+
+  document.getElementById('lockBtn').addEventListener('click', () => {
+    // if initial empty, auto snapshot
+    const totalBefore = sumPool(state.initial);
+    if (totalBefore === 0) {
+      for (const d of state.denoms) state.initial[d] = Number(state.pool[d]||0);
+    }
+    if (sumPool(state.pool) <= 0) {
+      alert('Quỹ đang trống. Nhập số lượng trước.');
+      return;
+    }
+    state.locked = true;
+    saveState();
+    updateStats();
+  });
+
+  document.getElementById('resetAllBtn').addEventListener('click', () => {
+    if (!confirm('Reset tất cả (quỹ + lịch sử)?')) return;
+    localStorage.removeItem(STORAGE_KEY);
+    state = loadState();
+    renderDenomInputs();
+    updateStats();
+    alert('Đã reset.');
+  });
+
+  document.getElementById('drawBtn').addEventListener('click', () => {
+    const amt = drawOne();
+    if (amt == null) return;
+    const result = document.getElementById('result');
+    result.innerHTML = `${formatVND(amt)}<small>Chúc mừng!</small>`;
+    updateStats();
+  });
+
+  document.getElementById('adminBtn').addEventListener('click', () => {
+    const pin = prompt('Nhập PIN chủ phòng:');
+    if (pin == null) return;
+    if (String(pin) === String(state.pin || DEFAULT_PIN)) {
+      state.locked = false;
+      saveState();
+      // when unlock, show setup
+      document.getElementById('setupSection').style.display = 'grid';
+      document.getElementById('kioskSection').style.display = 'none';
+      updateStats();
+    } else {
+      alert('Sai PIN.');
+    }
+  });
+
+  document.getElementById('clearHistoryBtn').addEventListener('click', () => {
+    if (!confirm('Xóa lịch sử rút?')) return;
+    state.history = [];
+    saveState();
+    updateStats();
+  });
+
+  document.getElementById('exportBtn').addEventListener('click', exportCSV);
+
+  // initial render
+  renderDenomInputs();
+  updateStats();
+
+  // show hint about default pin
+  if (!state.pin) state.pin = DEFAULT_PIN;
+
+</script>
+</body>
+</html>
