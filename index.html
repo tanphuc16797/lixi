@@ -475,6 +475,15 @@
             });
 
             wrap.querySelectorAll('input').forEach((inp) => {
+                inp.addEventListener('focus', function () {
+                    this.select();
+                });
+                inp.addEventListener('mouseenter', function () {
+                    if (document.activeElement !== this) {
+                        this.focus();
+                        this.select();
+                    }
+                });
                 inp.addEventListener('input', () => {
                     const denom = Number(inp.dataset.denom);
                     const val = Math.max(0, Number(inp.value || 0));
@@ -615,7 +624,9 @@
             saveState();
         });
 
-        document.getElementById('pinInput').addEventListener('change', (e) => {
+        const pinInput = document.getElementById('pinInput');
+        pinInput.addEventListener('focus', function () { this.select(); });
+        pinInput.addEventListener('change', (e) => {
             const v = String(e.target.value || '').trim();
             if (v.length >= 4) {
                 state.pin = v;
